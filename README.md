@@ -1,2 +1,2 @@
 # bsboc
-Serialization based on concepts
+Basic serialization based on concepts
