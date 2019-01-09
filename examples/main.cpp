@@ -14,5 +14,6 @@ int main()
   std::cout << SBOC::getSize(vall) << "\n";
   std::cout << SBOC::getSize(val)  << "\n";
   std::cout << SBOC::getSize(valt) << "\n";
+  SBOC::serialize(v, 1);
   return 0;
 }
