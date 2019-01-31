@@ -20,22 +20,31 @@ namespace SBOC
   template<class T>
   const auto is_tuple_v = is_tuple<T>::value;
 
-  template<class C, typename T = typename C::value_type>
-  concept Container = requires(C con, T a, T b)
+  template<typename T>
+  using Value_type_of = typename T::value_type;
+
+  template<typename T>
+  using Iterator_of = typename T::iterator;
+
+  template<class C>
+  concept Container = requires(C con, Value_type_of<C> a, Value_type_of<C> b)
   {
     { con.size() } -> size_t;
-    { std::begin(con) } -> typename C::const_iterator;
-    { std::end(con) } -> typename C::const_iterator;
+    { std::begin(con) } -> Iterator_of<C>;
+    { std::end(con) } -> Iterator_of<C>;
 
-    std::EqualityComparable<T>;
-    std::Destructible<T>;
-    std::CopyConstructible<T>;
+    std::EqualityComparable<Value_type_of<C>>;
+    std::Destructible<Value_type_of<C>>;
+    std::CopyConstructible<Value_type_of<C>>;
 
     std::DefaultConstructible<C>;
     std::CopyConstructible<C>;
     std::EqualityComparable<C>;
     std::Swappable<C>;
   };
+
+  template<class T>
+  concept Byte = (sizeof(T) == sizeof(uint8_t));
 
   template<typename T>
   concept Serializable = std::Integral<T>            ||
@@ -45,9 +54,25 @@ namespace SBOC
                          std::is_array_v<T>          ||
                          is_tuple_v<T>;
 
-  template<typename C, typename T = typename C::value_type>
-  concept SerializingContainer = Container<C> &&
-                                (sizeof(std::remove_pointer_t<T>) == sizeof(uint8_t));
-}
+  template<class F, class Ret, class... Args>
+  concept Callable = requires(F f, Args... args)
+  {
+    { f(args...) } -> Ret;
+  };
 
+  template<typename C>
+  concept BasicSerializingContainer = Container<C> && Byte<std::remove_pointer_t<Value_type_of<C>>>;
+
+  template<typename C, typename F, typename T = std::vector<uint8_t>>
+  concept ComplexSerializingContainer = requires()
+  {
+    Container<C>;
+    BasicSerializingContainer<T>;
+    Callable<F, Value_type_of<C>, T>;
+  };
+
+  template<typename C, typename F = void>
+  concept SerializingContainer = BasicSerializingContainer<C> || ComplexSerializingContainer<C, F>;
+
+}
 #endif //INCLUDE_SERIALIZATION_CONCEPTS_HPP

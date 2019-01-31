@@ -27,6 +27,12 @@ namespace SBOC
   {
   }
 
+  template<Callable<uint16_t, std::vector<uint8_t>> F, ComplexSerializingContainer<F> C>
+  void test(F f, C c)
+  {
+    f({1,2,3,4});
+  }
+
   namespace helpers::size
   {
     template<Serializable T>
@@ -80,7 +86,6 @@ namespace SBOC
 
   template<typename T, typename ...Args>
   static size_t getSize(const T& obj, const Args... args) { return helpers::size::getSizeHelper<T>::value(obj) + getSize(args...); }
-
 
 }
 #endif //INCLUDE_SBOC_HPP
