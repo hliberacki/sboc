@@ -2,11 +2,10 @@
 #include "../include/sboc.hpp"
 #include <list>
 #include <map>
-#include <cstddef>
 
 
-uint16_t foo(std::vector<uint8_t>) { std::cout << "hihi\n"; return 1; }
-auto f = [](std::vector<uint8_t>) -> uint16_t { std::cout << "hehehe"; return 1;};
+uint16_t foo(std::vector<std::byte>) { std::cout << "hihi\n"; return 1; }
+auto f = [](std::vector<std::byte>) -> uint16_t { std::cout << "hehehe"; return 1;};
 int main()
 {
   std::vector<uint8_t*> v;

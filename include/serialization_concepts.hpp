@@ -61,18 +61,16 @@ namespace SBOC
   };
 
   template<typename C>
-  concept BasicSerializingContainer = Container<C> && Byte<std::remove_pointer_t<Value_type_of<C>>>;
+  concept BasicSerializingContainer = Container<C> &&
+                                      Byte<std::remove_pointer_t<Value_type_of<C>>>;
 
   template<typename C, typename F, typename T = std::vector<uint8_t>>
-  concept ComplexSerializingContainer = requires()
-  {
-    Container<C>;
-    BasicSerializingContainer<T>;
-    Callable<F, Value_type_of<C>, T>;
-  };
+  concept ComplexSerializingContainer = Container<C> &&
+                                        Callable<F, Value_type_of<C>, T>;
 
   template<typename C, typename F = void>
-  concept SerializingContainer = BasicSerializingContainer<C> || ComplexSerializingContainer<C, F>;
+  concept SerializingContainer = BasicSerializingContainer<C> ||
+                                 ComplexSerializingContainer<C, F>;
 
 }
 #endif //INCLUDE_SERIALIZATION_CONCEPTS_HPP

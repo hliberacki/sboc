@@ -7,6 +7,7 @@
 #include <numeric>
 #include <tuple>
 #include "serialization_concepts.hpp"
+#include <cstddef>
 
 namespace SBOC
 {
@@ -27,10 +28,13 @@ namespace SBOC
   {
   }
 
-  template<Callable<uint16_t, std::vector<uint8_t>> F, ComplexSerializingContainer<F> C>
+  template<Callable<uint16_t, std::vector<std::byte>> F, ComplexSerializingContainer<F, std::vector<std::byte>> C>
   void test(F f, C c)
   {
-    f({1,2,3,4});
+    std::vector<std::byte> v;
+    std::byte myByte{ 2 };
+    v.push_back(myByte);
+    f(v);
   }
 
   namespace helpers::size
