@@ -27,7 +27,7 @@ namespace SBOC
   using Iterator_of = typename T::iterator;
 
   template<class C>
-  concept Container = requires(C con, Value_type_of<C> a, Value_type_of<C> b)
+  concept Container = requires(C con)
   {
     { con.size() } -> size_t;
     { std::begin(con) } -> Iterator_of<C>;
