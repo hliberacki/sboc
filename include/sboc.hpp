@@ -18,9 +18,16 @@ namespace SBOC
   static size_t getSize(const T& obj, const Args... args);
   
 
-  template<SerializingContainer Con, Serializable S>
+  template<SerializingContainer Con, typename S>
   void serialize(Con con, S val)
   {
+		auto offset = con.size();
+		auto size = helpers::size::GetSizeHelper(val);
+		con.resize(offset + size);
+
+		Con::iterator it = con.begin()+offset;
+		helpers::serializer(val,it);
+		assert(con.begin() + offset + size == it);
   }
 
   template<SerializingContainer Con, Serializable S>
